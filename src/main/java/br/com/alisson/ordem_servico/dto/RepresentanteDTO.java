@@ -2,11 +2,15 @@ package br.com.alisson.ordem_servico.dto;
 
 public class RepresentanteDTO {
     
+    private Long id;
     private String nome;
     private int codigoSAP;
     private EnderecoDTO endereco;
 
-    
+    public Long getId() {
+        return id;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -17,6 +21,10 @@ public class RepresentanteDTO {
 
       public EnderecoDTO getEndereco() {
         return endereco;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setNome(String nome) {

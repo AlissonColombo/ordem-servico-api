@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 ela será mapeada para uma tabela no banco de dados com o nome clientes, 
 e os atributos da classe serão as colunas da tabela*/ 
 @Entity
-@Table(name = "ordem_servico")
+@Table(name = "tb_ordem_servico")
 public class OrdemServico {
 
     @Id
@@ -25,6 +25,10 @@ public class OrdemServico {
     @ManyToOne // muitos para um, ou seja, várias ordens de serviço podem estar associadas a um cliente
     @JoinColumn(name = "cliente_id") // nome da coluna que fará a referência ao cliente na tabela ordens_servico
     private Cliente cliente;
+
+    @ManyToOne
+    @JoinColumn(name = "representante_id")
+    private Representante representante;
 
     public OrdemServico() {
         this.dataAbertura = LocalDateTime.now(); // registrando a data de abertura automaticamente
@@ -87,6 +91,12 @@ public class OrdemServico {
         this.cliente = cliente;
     }    
 
-    
+    public Representante getRepresentante() {
+        return representante;
+    }
+
+    public void setRepresentante(Representante representante) {
+        this.representante = representante;
+    }
     
 }

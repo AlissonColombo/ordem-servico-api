@@ -2,12 +2,17 @@ package br.com.alisson.ordem_servico.dto;
 
 public class OrdemServicoDTO {
     
+    private Long representanteId;
     private Long clienteId;
     private Long ordemId;
     private String descricaoProblema;
     private String descricaoSolucao;
     private String status;
 
+
+    public Long getRepresentanteId() {
+        return representanteId;
+    }
 
     public Long getClienteId() {
         return clienteId;
@@ -26,6 +31,10 @@ public class OrdemServicoDTO {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setRepresentanteId(Long representanteId) {
+        this.representanteId = representanteId;
     }
 
     public void setClienteId(Long clienteId) {

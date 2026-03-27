@@ -2,10 +2,12 @@ package br.com.alisson.ordem_servico.service;
 
 import br.com.alisson.ordem_servico.model.Cliente;
 import br.com.alisson.ordem_servico.model.OrdemServico;
+import br.com.alisson.ordem_servico.model.Representante;
 import br.com.alisson.ordem_servico.repository.OrdemServicoRepository;
 import br.com.alisson.ordem_servico.model.StatusOrdem;
 import br.com.alisson.ordem_servico.dto.OrdemServicoDTO;
 import br.com.alisson.ordem_servico.repository.ClienteRepository;
+import br.com.alisson.ordem_servico.repository.RepresentanteRepository;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import br.com.alisson.ordem_servico.exeption.*;
@@ -16,24 +18,31 @@ import java.util.List;
 public class OrdemServicoService {
 
     private final OrdemServicoRepository repository;
-    private final ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;  
+    private final RepresentanteRepository representanteRepository;
 
-    public OrdemServicoService(OrdemServicoRepository repository, ClienteRepository clienteRepository) {
+    public OrdemServicoService(OrdemServicoRepository repository, ClienteRepository clienteRepository, RepresentanteRepository representanteRepository) {
         this.repository = repository;
         this.clienteRepository = clienteRepository;
+        this.representanteRepository = representanteRepository;
     }
 
     public OrdemServico criarOrdemServico(OrdemServicoDTO dto) {
 
-    OrdemServico novaOS = new OrdemServico();
-    Cliente cliente = clienteRepository.findById(dto.getClienteId())
-            .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente " + dto.getClienteId() + " não encontrado"));
+        
+        Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente " + dto.getClienteId() + " não encontrado"));
+        Representante representante = representanteRepository.findById(dto.getRepresentanteId())
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Representante " + dto.getRepresentanteId() + " não encontrado"));    
+        
+        OrdemServico novaOS = new OrdemServico();
+        novaOS.setCliente(cliente);
+        novaOS.setDescricaoProblema(dto.getDescricaoProblema());
+        novaOS.setDescricaoSolucao(dto.getDescricaoSolucao());
+        novaOS.setRepresentante(representante);
+        
 
-    novaOS.setCliente(cliente);
-    novaOS.setDescricaoProblema(dto.getDescricaoProblema());
-    novaOS.setDescricaoSolucao(dto.getDescricaoSolucao());
-
-    return repository.save(novaOS);
+        return repository.save(novaOS);
     }
 
     public List<OrdemServico> buscarTodasOrdens() {
