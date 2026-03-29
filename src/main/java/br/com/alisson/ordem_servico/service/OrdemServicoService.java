@@ -41,12 +41,16 @@ public class OrdemServicoService {
         novaOS.setRepresentante(representante);
 
         // Mapeando a lista de itens do DTO para a Entidade
-        dto.getItens().forEach(itemDTO -> {
-            ItemOS item = new ItemOS();
-            item.setDescricaoProblema(itemDTO.getDescricaoProblema());
-            item.setDescricaoSolucao(itemDTO.getDescricaoSolucao());
-            novaOS.adicionarItemOS(item);
-        });
+        if( dto.getItens() != null ) {
+            dto.getItens().forEach(itemDTO -> {
+                ItemOS item = new ItemOS();
+                item.setDescricaoProblema(itemDTO.getDescricaoProblema());
+                item.setDescricaoSolucao(itemDTO.getDescricaoSolucao());
+                novaOS.adicionarItemOS(item);
+            });
+        }else {
+            throw new NegocioException("A ordem de serviço deve conter pelo menos um item");
+        }
 
         return repository.save(novaOS);
     }
