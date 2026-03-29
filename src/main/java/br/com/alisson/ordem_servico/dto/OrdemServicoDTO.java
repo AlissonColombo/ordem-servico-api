@@ -1,14 +1,22 @@
 package br.com.alisson.ordem_servico.dto;
 
+import java.util.List;
+
 public class OrdemServicoDTO {
     
     private Long representanteId;
     private Long clienteId;
     private Long ordemId;
-    private String descricaoProblema;
-    private String descricaoSolucao;
     private String status;
+    private List<ItemOSDTO> itens;
 
+    public List<ItemOSDTO> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItemOSDTO> itens) {
+        this.itens = itens;
+    }
 
     public Long getRepresentanteId() {
         return representanteId;
@@ -21,13 +29,6 @@ public class OrdemServicoDTO {
         return ordemId;
     }
 
-    public String getDescricaoProblema() {
-        return descricaoProblema;
-    }
-
-    public String getDescricaoSolucao() {
-        return descricaoSolucao;
-    }
 
     public String getStatus() {
         return status;
@@ -44,18 +45,6 @@ public class OrdemServicoDTO {
     
     public void setOrdemId(Long ordemId) {
         this.ordemId = ordemId;
-    }
-
-    public void setDescricaoProblema(String descricaoProblema) {
-        this.descricaoProblema = descricaoProblema;
-    }
-
-    public void setDescricaoSolucao(String descricaoSolucao) {
-        this.descricaoSolucao = descricaoSolucao;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
 

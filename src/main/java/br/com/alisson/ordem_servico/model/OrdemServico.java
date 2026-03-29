@@ -3,6 +3,8 @@ package br.com.alisson.ordem_servico.model;
 //biblioteca para mapear a classe para uma tabela no banco de dados
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 /*este comando avisa que a classe cliente é uma entidade do banco de dados, ou seja, 
 ela será mapeada para uma tabela no banco de dados com o nome clientes, 
@@ -14,10 +16,11 @@ public class OrdemServico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // gerando o id automaticamente
     private Long id;
-    private String descricaoProblema;
-    private String descricaoSolucao;
     private LocalDateTime dataAbertura;
     private LocalDateTime dataConclusao;
+
+    @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemOS> itens = new ArrayList<>();
 
     @Enumerated(EnumType.STRING) // para armazenar o valor do enum como string no banco de dados
     private StatusOrdem status;
@@ -31,8 +34,34 @@ public class OrdemServico {
     private Representante representante;
 
     public OrdemServico() {
-        this.dataAbertura = LocalDateTime.now(); // registrando a data de abertura automaticamente
-        this.status = StatusOrdem.ABERTA; // definindo o status inicial
+    }
+
+    /*
+     Método de ciclo de vida do JPA.
+     Executado automaticamente antes de salvar uma nova Ordem de Serviço no banco.
+     Garante que a data de abertura e o status inicial sejam definidos apenas na criação,
+     evitando que dados antigos sejam sobrescritos ao buscar registros existentes.
+     */
+    @PrePersist
+    protected void aoCriar() {
+        if (this.dataAbertura == null) {
+            this.dataAbertura = LocalDateTime.now();
+        }
+        if (this.status == null) {
+            this.status = StatusOrdem.ABERTA;
+        }
+    }
+
+    public void adicionarItemOS(ItemOS item) {
+        item.setOrdemServico(this); // garante que o item saiba a qual ordem de serviço pertence
+        this.itens.add(item);
+    }
+
+    public List<ItemOS> getItens() {
+        return itens;
+    }
+    public void setItens(List<ItemOS> itens) {
+        this.itens = itens;
     }
 
     public Long getId() {
@@ -41,22 +70,6 @@ public class OrdemServico {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDescricaoProblema() {
-        return descricaoProblema;
-    }
-
-    public void setDescricaoProblema(String descricaoProblema) {
-        this.descricaoProblema = descricaoProblema;
-    }
-
-    public String getDescricaoSolucao() {
-        return descricaoSolucao;
-    }
-
-    public void setDescricaoSolucao(String descricaoSolucao) {
-        this.descricaoSolucao = descricaoSolucao;
     }
 
     public LocalDateTime getDataAbertura() {

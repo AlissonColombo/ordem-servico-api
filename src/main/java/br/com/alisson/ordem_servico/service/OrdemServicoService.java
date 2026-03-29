@@ -1,6 +1,7 @@
 package br.com.alisson.ordem_servico.service;
 
 import br.com.alisson.ordem_servico.model.Cliente;
+import br.com.alisson.ordem_servico.model.ItemOS;
 import br.com.alisson.ordem_servico.model.OrdemServico;
 import br.com.alisson.ordem_servico.model.Representante;
 import br.com.alisson.ordem_servico.repository.OrdemServicoRepository;
@@ -37,13 +38,19 @@ public class OrdemServicoService {
         
         OrdemServico novaOS = new OrdemServico();
         novaOS.setCliente(cliente);
-        novaOS.setDescricaoProblema(dto.getDescricaoProblema());
-        novaOS.setDescricaoSolucao(dto.getDescricaoSolucao());
         novaOS.setRepresentante(representante);
-        
+
+        // Mapeando a lista de itens do DTO para a Entidade
+        dto.getItens().forEach(itemDTO -> {
+            ItemOS item = new ItemOS();
+            item.setDescricaoProblema(itemDTO.getDescricaoProblema());
+            item.setDescricaoSolucao(itemDTO.getDescricaoSolucao());
+            novaOS.adicionarItemOS(item);
+        });
 
         return repository.save(novaOS);
     }
+
 
     public List<OrdemServico> buscarTodasOrdens() {
         return repository.findAll();
