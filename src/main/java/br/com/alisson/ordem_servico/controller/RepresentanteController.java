@@ -28,8 +28,8 @@ public class RepresentanteController {
     }
 
     @GetMapping
-    public List<Representante> buscarTodosClientes() {
-        return representanteService.buscarTodosClientes();
+    public List<Representante> buscarTodos() { 
+        return representanteService.buscarTodosRepresentantes(); 
     }
 
     @GetMapping("/{id}")

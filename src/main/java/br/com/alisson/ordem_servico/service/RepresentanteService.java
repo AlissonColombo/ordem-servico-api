@@ -33,7 +33,7 @@ public class RepresentanteService {
 
     }   
 
-    public List<Representante> buscarTodosClientes() {
+    public List<Representante> buscarTodosRepresentantes() {
         return repository.findAll();
     }
 

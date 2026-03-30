@@ -17,6 +17,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     (Cliente)e o segundo parâmetro é o tipo do identificador da entidade (Long). */
 
     List<Cliente> findByNomeContainingIgnoreCase(String nome);
+    List<Cliente> findByRepresentanteId(Long representanteId);
     
     // Método para buscar clientes por nome, ignorando maiúsculas e minúsculas.
     

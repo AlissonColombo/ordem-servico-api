@@ -13,7 +13,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrdemServicoRepository extends JpaRepository<OrdemServico, Long> {
-
     List<OrdemServico> findByStatus(StatusOrdem status); 
-    /* Método para buscar ordens de serviço por status */
+    
+    // ADICIONE ESTA LINHA:
+    List<OrdemServico> findByRepresentanteId(Long representanteId);
 }

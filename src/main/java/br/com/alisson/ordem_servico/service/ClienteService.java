@@ -2,7 +2,9 @@ package br.com.alisson.ordem_servico.service;
 
 import br.com.alisson.ordem_servico.dto.ClienteDTO;
 import br.com.alisson.ordem_servico.model.Cliente;
+import br.com.alisson.ordem_servico.model.PerfilUsuario;
 import br.com.alisson.ordem_servico.model.Representante;
+import br.com.alisson.ordem_servico.model.Usuario;
 import br.com.alisson.ordem_servico.repository.ClienteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import br.com.alisson.ordem_servico.repository.RepresentanteRepository;
@@ -47,4 +49,12 @@ public class ClienteService {
         return clienteRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente com o ID "
          + id + " não encontrado"));
     }
+
+    public List<Cliente> listarPorContexto(Usuario executor) {
+    if (executor.getPerfil() == PerfilUsuario.ADMIN) {
+        return clienteRepository.findAll(); // Admin vê todos os clientes do sistema
+    }
+    // Gerente/Analista vê apenas os clientes do representante dele
+    return clienteRepository.findByRepresentanteId(executor.getRepresentante().getId());
+}
 }

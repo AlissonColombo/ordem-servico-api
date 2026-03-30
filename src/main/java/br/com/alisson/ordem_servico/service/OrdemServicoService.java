@@ -3,11 +3,13 @@ package br.com.alisson.ordem_servico.service;
 import br.com.alisson.ordem_servico.model.Cliente;
 import br.com.alisson.ordem_servico.model.ItemOS;
 import br.com.alisson.ordem_servico.model.OrdemServico;
+import br.com.alisson.ordem_servico.model.PerfilUsuario;
 import br.com.alisson.ordem_servico.model.Representante;
 import br.com.alisson.ordem_servico.repository.OrdemServicoRepository;
 import br.com.alisson.ordem_servico.model.StatusOrdem;
 import br.com.alisson.ordem_servico.model.Usuario;
 import br.com.alisson.ordem_servico.dto.OrdemServicoDTO;
+import br.com.alisson.ordem_servico.dto.UsuarioDTO;
 import br.com.alisson.ordem_servico.repository.ClienteRepository;
 import br.com.alisson.ordem_servico.repository.RepresentanteRepository;
 import java.time.LocalDateTime;
@@ -30,16 +32,29 @@ public class OrdemServicoService {
     }
 
     public OrdemServico criarOrdemServico(OrdemServicoDTO dto, Usuario usuarioLogado) {
+        
+        if (usuarioLogado == null) {
+            throw new NegocioException("Usuário não identificado.");
+        }
+
         Cliente cliente = clienteRepository.findById(dto.getClienteId())
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente " + dto.getClienteId() + " não encontrado"));
-        Representante representante = representanteRepository.findById(dto.getRepresentanteId())
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Representante " + dto.getRepresentanteId() + " não encontrado"));    
-        if (!cliente.getRepresentante().getId().equals(usuarioLogado.getRepresentante().getId())) {
-            throw new NegocioException("Este cliente não pertence à carteira do seu representante.");
+
+        // CORREÇÃO AQUI: Só valida a "casa" se o usuário NÃO for ADMIN
+        if (usuarioLogado.getPerfil() != PerfilUsuario.ADMIN) {
+            if (usuarioLogado.getRepresentante() == null || 
+                !cliente.getRepresentante().getId().equals(usuarioLogado.getRepresentante().getId())) {
+                throw new NegocioException("Este cliente não pertence à carteira do seu representante.");
+            }
         }
+
         OrdemServico novaOS = new OrdemServico();
         novaOS.setCliente(cliente);
-        novaOS.setRepresentante(usuarioLogado.getRepresentante());
+        
+        // MELHORIA: Use o representante do CLIENTE, assim funciona para Admin e Gerente
+        novaOS.setRepresentante(cliente.getRepresentante());
+        
+        novaOS.setUsuarioResponsavel(usuarioLogado);
         novaOS.setStatus(StatusOrdem.ABERTA);
         // Mapeando a lista de itens do DTO para a Entidade
         if( dto.getItens() != null ) {
@@ -55,8 +70,13 @@ public class OrdemServicoService {
         return repository.save(novaOS);
     }
 
-    public List<OrdemServico> buscarTodasOrdens() {
-        return repository.findAll();
+    public List<OrdemServico> buscarTodasOrdens(Usuario executor) {
+        // Se for ADMIN, vê tudo (Dashboard Global)
+        if (executor.getPerfil() == PerfilUsuario.ADMIN) {
+            return repository.findAll();
+        }
+        // Se for GERENTE ou ANALISTA, vê apenas da sua "casa"
+        return repository.findByRepresentanteId(executor.getRepresentante().getId());
     }
 
     public OrdemServico buscarOrdemPorId(Long id) {

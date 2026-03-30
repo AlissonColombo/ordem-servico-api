@@ -20,7 +20,7 @@ public class Usuario {
     private PerfilUsuario perfil; // ADMIN ou ANALISTA
 
     @ManyToOne
-    @JoinColumn(name = "representante_id", nullable = false)
+    @JoinColumn(name = "representante_id", nullable = true) // Pode ser nulo para usuários ADMIN
     private Representante representante;
 
     public Usuario() {
