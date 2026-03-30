@@ -4,6 +4,7 @@ package br.com.alisson.ordem_servico.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,11 @@ public class Cliente {
     private String nome;
     private String cnpj;
     private String telefone;
+
+    @ManyToOne
+    @JoinColumn(name = "representante_id", nullable = false) // O banco não aceitará cliente sem representante
+    @JsonIgnoreProperties("clientes") // Evita o loop no Json, ignorando a lista de clientes do representante
+    private Representante representante;
 
     /*avisando que o atributo endereco é um objeto embutido na tabela clientes, ou seja,
     seus atributos serão colunas da tabela clientes */   
@@ -91,6 +97,12 @@ public class Cliente {
         this.ordensServico = ordensServico;
     }
 
-    
+    public Representante getRepresentante() {
+        return representante;
+    }
+
+    public void setRepresentante(Representante representante) {
+        this.representante = representante;
+    }
 
 }

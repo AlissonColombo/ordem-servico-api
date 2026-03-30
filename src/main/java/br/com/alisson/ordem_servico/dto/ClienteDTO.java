@@ -8,7 +8,16 @@ public class ClienteDTO {
     private String cnpj;   
     private String telefone;
     private EnderecoDTO endereco;
+    private Long representanteId;   
 
+
+    public Long getRepresentanteId() {
+        return representanteId;
+    }
+
+    public void setRepresentanteId(Long representanteId) {
+        this.representanteId = representanteId;
+    }
 
     public Long getClienteId() {
         return clienteId;

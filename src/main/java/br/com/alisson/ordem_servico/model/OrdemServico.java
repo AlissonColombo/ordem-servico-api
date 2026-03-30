@@ -38,6 +38,13 @@ public class OrdemServico {
     @JsonIgnoreProperties("ordensServico") // para evitar referência circular ao serializar o representante para JSON, ignorando a lista de ordens de serviço dentro do representante
     private Representante representante;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnoreProperties({"senha", "representante"}) // Segurança: não envia a senha no JSON
+    private Usuario usuarioResponsavel;
+
+    private LocalDateTime dataAtualizacao;
+
     public OrdemServico() {
     }
 
@@ -49,17 +56,37 @@ public class OrdemServico {
      */
     @PrePersist
     protected void aoCriar() {
-        if (this.dataAbertura == null) {
-            this.dataAbertura = LocalDateTime.now();
-        }
+        this.dataAbertura = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
         if (this.status == null) {
             this.status = StatusOrdem.ABERTA;
         }
     }
 
+    @PreUpdate
+    protected void aoAtualizar() {
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
     public void adicionarItemOS(ItemOS item) {
         item.setOrdemServico(this); // garante que o item saiba a qual ordem de serviço pertence
         this.itens.add(item);
+    }
+
+    public Usuario getUsuarioResponsavel() {
+        return usuarioResponsavel;
+    }
+
+    public void setUsuarioResponsavel(Usuario usuarioResponsavel) {
+        this.usuarioResponsavel = usuarioResponsavel;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
     }
 
     public List<ItemOS> getItens() {

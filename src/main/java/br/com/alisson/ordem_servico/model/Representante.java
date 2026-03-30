@@ -1,5 +1,10 @@
 package br.com.alisson.ordem_servico.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,9 +19,21 @@ public class Representante {
 
     @Embedded 
     private Endereco endereco;
+    
+    @OneToMany(mappedBy = "representante", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Cliente> clientes = new ArrayList<>();
 
     public Representante() {
     
+    }
+
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(List<Cliente> clientes) {
+        this.clientes = clientes;
     }
 
     public Long getId() {
