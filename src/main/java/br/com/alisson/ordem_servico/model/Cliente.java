@@ -2,6 +2,9 @@ package br.com.alisson.ordem_servico.model;
 
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 //biblioteca para mapear a classe cliente para uma tabela no banco de dados
@@ -12,7 +15,6 @@ import jakarta.persistence.*;
 ela será mapeada para uma tabela no banco de dados com o nome clientes, 
 e os atributos da classe serão as colunas da tabela*/    
 @Entity
-
 @Table(name = "tb_clientes")
 public class Cliente {
 
@@ -31,7 +33,8 @@ public class Cliente {
     private Endereco endereco;
 
     /*informando que o atributo ordensServico é uma relação de um para muitos com a tabela ordens_servico, 
-    ou seja, um cliente pode ter várias ordens de serviço */    
+    ou seja, um cliente pode ter várias ordens de serviço */  
+    @JsonIgnore  
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     /* se excluir um cliente, excluir suas ordens de serviço */
     private List<OrdemServico> ordensServico = new ArrayList<>();

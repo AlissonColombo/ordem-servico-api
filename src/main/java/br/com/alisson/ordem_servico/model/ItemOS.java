@@ -1,6 +1,7 @@
 package br.com.alisson.ordem_servico.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -18,8 +19,9 @@ public class ItemOS {
     private String descricaoSolucao;
 
     @JsonIgnore //Quando formos lancar o Json para o frontend, ele vai ignorar esse campo, para evitar um loop infinito, pois a OrdemServico tem uma lista de ItemOS e cada ItemOS tem uma OrdemServico, e assim por diante, causando um loop infinito de chamadas entre as duas classes
-    @ManyToOne// relacao de muitos para um, ou seja, varios itens de ordem de servico podem estar associados a uma ordem de servico
-    @JoinColumn(name = "ordem_servico_id")// nome da coluna que fará a referencia a ordem de servico na tabela item_os, ou seja, essa coluna vai armazenar o id da ordem de servico associada a cada item de ordem de servico
+    @ManyToOne
+    @JoinColumn(name = "ordem_servico_id")
+    @JsonIgnoreProperties("itens") // Evita que a OS tente listar os itens de volta dentro do item
     private OrdemServico ordemServico;
 
     public ItemOS() {

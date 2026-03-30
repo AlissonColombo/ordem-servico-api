@@ -5,7 +5,6 @@ import jakarta.persistence.Embeddable;
 
 /*informa que a classe Endereco é um objeto embutido na tabela clientes */
 @Embeddable
-
 public class Endereco {
     private String rua;
     private String numero;
@@ -13,6 +12,8 @@ public class Endereco {
     private String uf;
     private String cep;
 
+    public Endereco() {
+    }
     
     public String getRua() {
         return rua;

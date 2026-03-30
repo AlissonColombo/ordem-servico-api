@@ -4,6 +4,9 @@ package br.com.alisson.ordem_servico.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 
 /*este comando avisa que a classe cliente é uma entidade do banco de dados, ou seja, 
@@ -27,10 +30,12 @@ public class OrdemServico {
 
     @ManyToOne // muitos para um, ou seja, várias ordens de serviço podem estar associadas a um cliente
     @JoinColumn(name = "cliente_id") // nome da coluna que fará a referência ao cliente na tabela ordens_servico
+    @JsonIgnoreProperties("ordensServico") // para evitar referência circular ao serializar o cliente para JSON, ignorando a lista de ordens de serviço dentro do cliente
     private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "representante_id")
+    @JsonIgnoreProperties("ordensServico") // para evitar referência circular ao serializar o representante para JSON, ignorando a lista de ordens de serviço dentro do representante
     private Representante representante;
 
     public OrdemServico() {
